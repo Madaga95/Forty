@@ -1,0 +1,250 @@
+@import 'reset';
+@import 'variables';
+
+@font-face {
+    font-family: 'Source';
+    src: url('../webfonts/SourceSansPro-Light.woff') format('woff');
+    src: url('../webfonts/SourceSansPro-Light.woff2') format('woff2');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'Source';
+    src: url('../webfonts/SourceSansPro-SemiBold.woff') format('woff');
+    src: url('../webfonts/SourceSansPro-SemiBold.woff2') format('woff2');
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'Source';
+    src: url('../webfonts/SourceSansPro-Light.woff') format('woff');
+    src: url('../webfonts/SourceSansPro-Light.woff2') format('woff2');
+    font-weight: 100;
+}
+@mixin blockBack($c, $img, $intro : false){
+    background: url('../images/'+$img) 50% 50% / cover;
+    padding: 10*$space 4*$space ;
+    position: relative;
+
+    @if $intro == true{
+        padding: 25*$space 10*$space ;
+    } @else{
+        padding: 10*$space 4*$space ;
+        // ici si la souris passe sur les block l'opacité passe a zéro
+        &:hover::before{
+            opacity: 0;
+        }
+    }
+
+    &::before{
+        content: '';
+        display: block;
+        width: 100%;
+        height: 100%;
+        background: $c;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        opacity: 0.8;
+        transition: all .5s linear;
+    }
+    // on parle a tout les fils directs du block
+    & > *{
+        position: relative;
+        z-index: 5;
+    }
+}
+
+// une mixin pour les éléments média queries
+@mixin below($size){
+    @media screen and (max-width: $size){
+        @content;
+    }
+}
+
+html{
+    font-family: 'Source';
+    font-size: 15px;
+    background: $main;
+    color: $white;
+    body{
+
+        line-height: 1.5;
+        &.open nav{
+            display: flex;
+        }
+    }
+    a{
+        text-decoration: none;
+        color: inherit;
+        &:hover{
+            color: $hover;
+        }
+    }
+}
+
+button,
+.button{
+    text-transform: uppercase;
+    letter-spacing: .5rem;
+    border: 2px solid $white;
+    padding: .5rem 1rem;
+    display: inline-block;
+    font-size: .8rem;
+    background: none;
+    color: $white;
+    cursor: pointer;
+    transition: all .5s linear;
+    &.full{
+        background: $white;
+        color: $main;
+        &:hover{
+            background: $hover;
+            color: $main;
+        }
+    }
+    &:hover{
+        border-color: $hover;
+        color: $hover;
+    }
+}
+
+header{
+    display: flex;
+    justify-content: space-between;
+    text-transform: uppercase;
+    padding: $space;
+    letter-spacing: 0.5rem;
+    h1:hover span{
+        background: hover;
+    }
+    span{
+        background: $white;
+        color: $main;
+    }
+    nav{
+        display: none;
+        position: fixed;
+
+        background: $navBk;
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        left: 0;
+
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+
+        ul{
+            width: 250px;
+            text-align: center;
+            &:first-child{
+                li{
+                    padding: 1rem 0;
+                    border-bottom: 1px solid $navLine;
+                    &:last-child{
+                        border-bottom: none;
+                    }
+                }
+            }
+            & + ul li{
+                margin-bottom: 1rem;
+                .button{
+                    display: block;
+                }
+            }
+        }
+
+        #close{
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            border: none;
+        }
+    }
+    #menu{
+        border: none;
+    }
+}
+.intro{
+    @include blockBack($main, 'banner.jpg', true);
+    h1{
+        font-size: 3rem;
+        font-weight: bold;
+        border-bottom: 2px solid $white;
+        padding-bottom: 2*$space;
+        margin-bottom: 2*$space;
+    }
+    div{
+        display: flex;
+        justify-content: space-between;
+        p{
+            width: 45%;
+            text-transform: uppercase;
+            letter-spacing: .2rem;
+
+        }
+    }
+}
+.colors{
+    /*article:nth-child(6n+1){
+        @include blockBack($color1, 'pic01.jpg');
+    }*/
+    // on créer une boucle pour faire appel a la mixin pour les bons image
+    @for $i  from 1 through 6{
+        article:nth-child(6n + #{$i} ){
+            @include blockBack(nth($colors, $i), 'pic0#{$i}.jpg');
+        }
+        
+    }
+    display: flex;
+    flex-wrap: wrap;
+    article{
+        width: 40%;
+        &:nth-child(4n+2),
+        &:nth-child(4n+3){
+            width: 60%;
+        }
+
+        @include below(850px){
+            width: 50% !important;
+        }
+        @include below(600px){
+            width: 100% !important;
+        }
+
+        h1{
+            font-size: 1.5rem;
+            border-bottom: 1px solid $white;
+            padding-bottom: $space;
+            margin-bottom: $space;
+            width: -moz-fit-content;
+            width: fit-content;
+            padding-right: 5rem;
+        }
+        p{
+            text-transform: uppercase;
+            letter-spacing: .2rem;
+        }
+    }
+}
+
+.single{
+    background-color: $secondary;
+    padding: 15px;
+    h1{
+        font-size: 2rem;
+        font-weight: bold;
+        border-bottom: 2px solid $white;
+        padding-bottom: 2*$space;
+        margin-bottom: 2*$space;
+        width: 45%;
+        padding-right: 5rem;
+    }
+    p{
+        padding-bottom: $space;
+        margin-bottom: $space;
+    }
+}
